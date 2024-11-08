@@ -197,7 +197,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await HTTP('get', `/users/details?id=672db41751b5c79fd60aef1d`);
+        const response = await HTTP('get', `/users/details?id=672e14f551b5c79fd60aef35`);
         
         if (response.data) {
           setUserDetails({
