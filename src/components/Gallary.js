@@ -111,26 +111,34 @@ const Gallery = () => {
   const query = useQuery();
   const eventId = query.get('eventId');
   const folderId = query.get('folderId');
+  const matchPersonId = query.get('matchPersonId');
   const limit = 30;
 
   const fetchPhotos = useCallback(async () => {
     setIsFetching(true);
     try {
-      const response = await HTTP(
-        'get',
-        `/api/photos/event?eventId=${eventId}&folderId=${folderId}&skip=${page * limit}&limit=${limit}`
-      );
+      let url = `/api/photos/event?eventId=${eventId}&skip=${page * limit}&limit=${limit}`;
+      
+      if (folderId) {
+        url += `&folderId=${folderId}`;
+      }
+      
+      if (matchPersonId) {
+        url += `&matchPersonId=${matchPersonId}`;
+      }
+
+      const response = await HTTP('get', url);
       setPhotos(response.data.data);
-      setTotalPhotos(response.data.totalCount); // Assuming API returns total count
+      setTotalPhotos(response.data.totalCount);
     } catch (error) {
       console.error('Error fetching photos:', error);
     }
     setIsFetching(false);
-  }, [eventId, folderId, page]);
+  }, [eventId, folderId, matchPersonId, page]);
 
   useEffect(() => {
     if (eventId) fetchPhotos();
-  }, [fetchPhotos, eventId, folderId]);
+  }, [fetchPhotos, eventId]);
 
   const handleClick = (photo) => {
     setSelectedPhoto(photo);

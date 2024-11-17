@@ -9,7 +9,7 @@ import { HTTP } from '../services/http.service';
 const Container = styled.div`
   max-width: 1600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 40px;
   background-color: #1a1a1a;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

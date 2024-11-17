@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Moon, Sun, Menu, X, CloudUpload, Images, User } from 'lucide-react';
+import { Moon, Sun, Menu, X, CloudUpload, Images, User, Camera } from 'lucide-react';
 import { ThemeContext } from '../ThemeContext';
 
 const DashboardContainer = styled.div`
@@ -104,6 +104,7 @@ const ToggleSidebarButton = styled(IconButton)`
 const menuItems = [
   { name: 'Profile', path: '/', icon: User },
   { name: 'Upload', path: '/uploads', icon: CloudUpload },
+  { name: 'Selfie Upload', path: '/selfie-upload', icon: Camera },
   { name: 'Events', path: '/events', icon: Images },
   // You can add more menu items as needed
 ];
