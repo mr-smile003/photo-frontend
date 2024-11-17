@@ -11,6 +11,7 @@ import Events from './components/Events';
 import Gallery from './components/Gallary';
 import Profile from './components/Profile';
 import EventFolders from './components/EventFolders';
+import SelfieUploader from './components/SelfiUploader';
 
 const AppContainer = styled.div`
   height: 100vh;
@@ -33,6 +34,7 @@ function App() {
               <Route path="/event-gallary" element={<Gallery />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/selfie-upload" element={<SelfieUploader />} />
             </Routes>
           </Dashboard>
         </AppContainer>
