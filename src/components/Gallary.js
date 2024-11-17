@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { HTTP } from '../services/http.service';
@@ -12,6 +11,13 @@ const GalleryContainer = styled.div`
   background-color: #1a1a1a;
 `;
 
+const PhotoWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+`;
+
 const PhotoItem = styled.img`
   width: 100%;
   height: 200px;
@@ -22,6 +28,31 @@ const PhotoItem = styled.img`
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
+  }
+`;
+
+const ScanningOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(#03A9F4,#03A9F4), 
+    linear-gradient(90deg, #ffffff33 1px,transparent 0,transparent 19px),
+    linear-gradient(#ffffff33 1px,transparent 0,transparent 19px),
+    linear-gradient(transparent, #2196f387);
+  background-size: 100% 1.5%, 10% 100%, 100% 10%, 100% 100%;
+  background-repeat: no-repeat, repeat, repeat, no-repeat;
+  background-position: 0 0, 0 0, 0 0, 0 0;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 1.5%, 0% 1.5%);
+  animation: scanningAnimation 2s infinite linear;
+  pointer-events: none;
+
+  @keyframes scanningAnimation {
+    to {
+      background-position: 0 100%, 0 0, 0 0, 0 0;
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
   }
 `;
 
@@ -106,6 +137,7 @@ const Gallery = () => {
   const [page, setPage] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
   const [totalPhotos, setTotalPhotos] = useState(0);
+  const [detectionStatus, setDetectionStatus] = useState({});
 
   const navigate = useNavigate();
   const query = useQuery();
@@ -136,9 +168,50 @@ const Gallery = () => {
     setIsFetching(false);
   }, [eventId, folderId, matchPersonId, page]);
 
+  const fetchDetectionStatus = useCallback(async () => {
+    if (!photos.length) return;
+
+    try {
+      const statusPromises = photos.map(photo =>
+        HTTP('get', `/api/photos/detection?photoId=${photo._id}&eventId=${eventId}`)
+          .then(response => ({
+            photoId: photo._id,
+            isDetected: response.data.isDetected
+          }))
+          .catch(error => {
+            console.error(`Error fetching detection status for photo ${photo._id}:`, error);
+            return { photoId: photo._id, isDetected: null };
+          })
+      );
+
+      const statuses = await Promise.all(statusPromises);
+      const newDetectionStatus = {};
+      statuses.forEach(status => {
+        newDetectionStatus[status.photoId] = status.isDetected;
+      });
+      setDetectionStatus(newDetectionStatus);
+    } catch (error) {
+      console.error('Error fetching detection statuses:', error);
+    }
+  }, [photos, eventId]);
+
   useEffect(() => {
     if (eventId) fetchPhotos();
   }, [fetchPhotos, eventId]);
+
+  // Effect for polling detection status every 5 seconds
+  useEffect(() => {
+    if (!photos.length) return;
+
+    // Initial fetch
+    fetchDetectionStatus();
+
+    // Set up polling interval
+    const intervalId = setInterval(fetchDetectionStatus, 10000);
+
+    // Cleanup interval on unmount or when photos change
+    return () => clearInterval(intervalId);
+  }, [photos, fetchDetectionStatus]);
 
   const handleClick = (photo) => {
     setSelectedPhoto(photo);
@@ -157,11 +230,11 @@ const Gallery = () => {
   };
 
   const jumpToLastPage = () => {
-    setPage(Math.ceil(totalPhotos / limit) - 1); // Calculate the last page
+    setPage(Math.ceil(totalPhotos / limit) - 1);
   };
 
   const handleBack = () => {
-    navigate(-1); // Go back to the previous location
+    navigate(-1);
   };
 
   return (
@@ -185,7 +258,14 @@ const Gallery = () => {
       </Header>
       <GalleryContainer>
         {photos.map((photo) => (
-          <PhotoItem key={photo._id} src={photo.url} alt="photo" onClick={() => handleClick(photo)} />
+          <PhotoWrapper key={photo._id}>
+            <PhotoItem 
+              src={photo.url} 
+              alt="photo" 
+              onClick={() => handleClick(photo)} 
+            />
+            {detectionStatus[photo._id] === false && <ScanningOverlay />}
+          </PhotoWrapper>
         ))}
       </GalleryContainer>
       {selectedPhoto && (
