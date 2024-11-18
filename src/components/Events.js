@@ -273,7 +273,7 @@ const Events = () => {
 
       <EventGrid>
         {events.map(event => (
-          <EventCard key={event._id} to={`/events/folders?eventId=${event._id}`}>
+          <EventCard key={event._id} to={`/events/folders?eventId=${event.eventNumber}`}>
             <EventName>Event Name: {event.name}</EventName>
             <EventNumber>Event Number: {event.eventNumber}</EventNumber>
             <EventDescription>{event.description}</EventDescription>

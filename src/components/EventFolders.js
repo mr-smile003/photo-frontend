@@ -170,7 +170,7 @@ const EventFolders = () => {
   });
 
   useEffect(() => {
-    HTTP('get', `/folders/all?eventId=${eventId}`)
+    HTTP('get', `/folders/all?eventNumber=${eventId}`)
     .then(response => setFolders(response.data))
     .catch(error => console.error('Error fetching folders:', error));
   }, [eventId]);

@@ -149,7 +149,7 @@ const Gallery = () => {
   const fetchPhotos = useCallback(async () => {
     setIsFetching(true);
     try {
-      let url = `/api/photos/event?eventId=${eventId}&skip=${page * limit}&limit=${limit}`;
+      let url = `/api/photos/event?eventNumber=${eventId}&skip=${page * limit}&limit=${limit}`;
       
       if (folderId) {
         url += `&folderId=${folderId}`;

@@ -142,7 +142,8 @@ const SelfieUploader = () => {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('eventId', selectedEvent);
+    const eventNumber = events?.find(event => event._id === selectedEvent)?.eventNumber;
+    formData.append('eventNumber', eventNumber);
 
     try {
       const response = await HTTP('post', '/api/photos/selfie', formData, {
@@ -151,7 +152,8 @@ const SelfieUploader = () => {
       
       // Navigate to gallery with matchPersonId
       if (response.data.matchPersonId) {
-        navigate(`/event-gallary?eventId=${selectedEvent}&matchPersonId=${response.data.matchPersonId}`);
+        const eventNumber = events?.find(event => event._id === selectedEvent)?.eventNumber;
+        navigate(`/event-gallary?eventNumber=${eventNumber}&matchPersonId=${response.data.matchPersonId}`);
       } else {
         setSuccess('Selfie uploaded successfully, but no matches found.');
       }
