@@ -173,7 +173,7 @@ const Gallery = () => {
 
     try {
       const statusPromises = photos.map(photo =>
-        HTTP('get', `/api/photos/detection?photoId=${photo._id}&eventId=${eventId}`)
+        HTTP('get', `/api/photos/detection?photoId=${photo._id}&eventNumber=${eventId}`)
           .then(response => ({
             photoId: photo._id,
             isDetected: response.data.isDetected

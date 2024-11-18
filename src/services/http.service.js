@@ -12,7 +12,6 @@ import axios from 'axios';
 export function HTTP(method, uri, data = {}, headers = {}, fullUrl = null, config = {}) {
     return new Promise((resolve, reject) => {
         // Determine the URL, prioritizing fullUrl if provided
-        console.log(process.env.REACT_APP_BASE_URL, "process.env.REACT_APP_BASE_URL",process.env.REACT_APP_X_API_KEY)
         const url = fullUrl || `${process.env.REACT_APP_BASE_URL}${uri}`.trim();
 
         const defaultHeaders = {

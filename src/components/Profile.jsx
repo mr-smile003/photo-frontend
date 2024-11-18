@@ -199,13 +199,13 @@ const Profile = () => {
       try {
         const response = await HTTP('get', `/users/details?id=672e14f551b5c79fd60aef35`);
         
-        if (response.data) {
+        if (response.data.data) {
           setUserDetails({
             ...userDetails,
-            socialMedia: response.data.socialMedia,
-            contactInfo: response.data.contactInfo,
-            extraDetails: response.data.extraDetails,
-            backgroundPhotoUrl: response.data.backgroundPhotoUrl // Load existing background photo URL
+            socialMedia: response.data.data.socialMedia,
+            contactInfo: response.data.data.contactInfo,
+            extraDetails: response.data.data.extraDetails,
+            backgroundPhotoUrl: response.data.data.backgroundPhotoUrl // Load existing background photo URL
           });
         }
       } catch (error) {
