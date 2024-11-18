@@ -52,11 +52,18 @@ const EventCard = styled(Link)`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
   text-align: center;
+  text-decoration: none; 
 `;
 
-const EventName = styled.h3`
-  color: #007BFF;
+const EventName = styled.h4`
+  color: #FFFFFF;
   font-size: 1.5rem;
+  text-decoration: none;
+`;
+const EventNumber = styled.h5`
+  color: #FFFFFF;
+  font-size: 1rem;
+  text-decoration: none;
 `;
 
 const EventDescription = styled.p`
@@ -267,7 +274,8 @@ const Events = () => {
       <EventGrid>
         {events.map(event => (
           <EventCard key={event._id} to={`/events/folders?eventId=${event._id}`}>
-            <EventName>{event.name}</EventName>
+            <EventName>Event Name: {event.name}</EventName>
+            <EventNumber>Event Number: {event.eventNumber}</EventNumber>
             <EventDescription>{event.description}</EventDescription>
             <EventDate>{new Date(event.date).toLocaleDateString()}</EventDate>
             {event.eventPicture && <img src={`${event.eventPicture}`} alt={event.name} width="100%" />} {/* Display event picture */}
