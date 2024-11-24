@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import styled, { css } from 'styled-components';
 import { HTTP } from '../services/http.service';
@@ -130,7 +129,7 @@ export default function PhotoUploader() {
       setError(null);
       setSuccess(false);
     },
-    [files]
+    [files, maxSize]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

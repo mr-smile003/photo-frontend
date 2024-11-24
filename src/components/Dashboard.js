@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Moon, Sun, Menu, X, CloudUpload, Images, User, Camera } from 'lucide-react';
+import { CloudUpload, Images, User, Camera } from 'lucide-react';
 import { ThemeContext } from '../ThemeContext';
 
 const DashboardContainer = styled.div`
@@ -51,15 +51,6 @@ const Content = styled.div`
 `;
 
 
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: ${props => props.theme === 'light' ? '#fff' : '#2a2a2a'};
-  transition: background-color 0.3s ease, color 0.3s ease;
-`;
-
 const NavLink = styled(Link)`
   display: flex;
   align-items: center;
@@ -79,28 +70,6 @@ const NavLink = styled(Link)`
   }
 `;
 
-const IconButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: inherit;
-  display: flex;
-  align-items: center;
-  transition: color 0.3s ease;
-  
-  &:hover {
-    color: ${props => props.theme === 'light' ? '#007BFF' : '#ccc'};
-  }
-`;
-
-const ToggleSidebarButton = styled(IconButton)`
-  display: block;
-
-  @media (min-width: 768px) {
-    display: none;
-  }
-`;
-
 const menuItems = [
   { name: 'Profile', path: '/', icon: User },
   { name: 'Upload', path: '/uploads', icon: CloudUpload },
@@ -110,13 +79,12 @@ const menuItems = [
 ];
 
 const Dashboard = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   return (
     <DashboardContainer theme={theme}>
-      <Sidebar isOpen={sidebarOpen} theme={theme}>
+      <Sidebar isOpen={false} theme={theme}>
         <h2 style={{ marginBottom: '20px' }}>Photo Frontend</h2>
         <nav>
           {menuItems.map((item) => (

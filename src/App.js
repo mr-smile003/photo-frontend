@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { ThemeProvider } from './ThemeContext';
 import Dashboard from './components/Dashboard';
 import Home from './components/Home';
-import Users from './components/Users';
 import Reports from './components/Reports';
 import Settings from './components/Settings';
 import Events from './components/Events';

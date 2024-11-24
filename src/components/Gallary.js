@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { HTTP } from '../services/http.service';
@@ -138,6 +138,7 @@ const Gallery = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [totalPhotos, setTotalPhotos] = useState(0);
   const [detectionStatus, setDetectionStatus] = useState({});
+  const intervalIdRef = useRef(null);
 
   const navigate = useNavigate();
   const query = useQuery();
@@ -173,7 +174,7 @@ const Gallery = () => {
 
     try {
       const statusPromises = photos.map(photo =>
-        HTTP('get', `/api/photos/detection?photoId=${photo._id}&eventNumber=${eventId}`)
+        HTTP('get', `/api/photos/detection?photoId=${photo._id}&eventId=${photo.eventId}`)
           .then(response => ({
             photoId: photo._id,
             isDetected: response.data.isDetected
@@ -190,6 +191,11 @@ const Gallery = () => {
         newDetectionStatus[status.photoId] = status.isDetected;
       });
       setDetectionStatus(newDetectionStatus);
+
+      const allDetected = Object.values(newDetectionStatus).every(isDetected => isDetected === true);
+      if (allDetected) {
+        clearInterval(intervalIdRef.current);
+      }
     } catch (error) {
       console.error('Error fetching detection statuses:', error);
     }
@@ -199,18 +205,14 @@ const Gallery = () => {
     if (eventId) fetchPhotos();
   }, [fetchPhotos, eventId]);
 
-  // Effect for polling detection status every 5 seconds
   useEffect(() => {
     if (!photos.length) return;
 
-    // Initial fetch
     fetchDetectionStatus();
 
-    // Set up polling interval
-    const intervalId = setInterval(fetchDetectionStatus, 10000);
+    intervalIdRef.current = setInterval(fetchDetectionStatus, 10000);
 
-    // Cleanup interval on unmount or when photos change
-    return () => clearInterval(intervalId);
+    return () => clearInterval(intervalIdRef.current);
   }, [photos, fetchDetectionStatus]);
 
   const handleClick = (photo) => {

@@ -15,3 +15,15 @@
 .main-content {
   flex: 1;
 }
+
+.custom-toast {
+  background-color: #000000 !important; /* Black background */
+  color: #ffffff !important; /* White text */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* Shining effect */
+  border-radius: 8px; /* Optional: Rounded corners */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Optional: Subtle border */
+}
+
+.custom-toast .Toastify__progress-bar {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2)); /* Shining progress bar */
+}

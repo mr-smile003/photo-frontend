@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { HTTP } from '../services/http.service';
@@ -142,17 +141,6 @@ const TextAreaField = styled.textarea`
   color: #f0f0f0;
 `;
 
-const SelectField = styled.select`
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #333;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: #333;
-  color: #f0f0f0;
-`;
-
 const SubmitButton = styled.button`
   padding: 10px 20px;
   font-size: 1rem;
@@ -176,8 +164,9 @@ const Events = () => {
   const [eventData, setEventData] = useState({
     name: '',
     description: '',
-    date: '',
-    file: null // New field for file input
+    date: moment().toISOString(),
+    file: null, // New field for file input
+    eventNumber: ''
   });
 
   useEffect(() => {
@@ -223,6 +212,7 @@ const Events = () => {
         name: eventData.name,
         description: eventData.description,
         date: eventData.date,
+        eventNumber: eventData.eventNumber,
         eventPicture: photoUrl // Add the photo URL to the event payload
       };
   
@@ -247,13 +237,15 @@ const Events = () => {
   
 
   const openEditModal = (event) => {
+    console.log(event, "event")
     setEventData({
       name: event.name,
       description: event.description,
       date: moment(event.date).format("YYYY-MM-DD"),
       file: null, // Reset file input during edit,
       _id: event._id,
-      eventPicture: event.eventPicture
+      eventPicture: event.eventPicture,
+      eventNumber: event?.eventNumber
     });
     setCurrentEventId(event._id);
     setIsEditing(true);
@@ -261,7 +253,7 @@ const Events = () => {
   };
 
   const openCreateModal = () => {
-    setEventData({ name: '', description: '', date: '', file: null });
+    setEventData({ name: '', description: '', date: '', file: null, date: moment().toISOString()});
     setIsEditing(false);
     setModalIsOpen(true);
   };
@@ -298,6 +290,14 @@ const Events = () => {
                 onChange={handleInputChange}
                 required
               />
+              <InputField
+                type="text"
+                name="eventNumber"
+                placeholder="Event Number"
+                value={eventData.eventNumber}
+                onChange={handleInputChange}
+                required
+              />
               <TextAreaField
                 name="description"
                 placeholder="Event Description"
@@ -310,12 +310,14 @@ const Events = () => {
                 name="date"
                 value={moment(eventData.date).format("YYYY-MM-DD")}
                 onChange={handleInputChange}
+                onClick={handleInputChange}
                 required
               />
               <InputField
                 type="file"
                 name="file"
                 onChange={handleFileChange} // Handle file input
+                
               />
               <SubmitButton type="submit">{isEditing ? 'Update Event' : 'Create Event'}</SubmitButton>
             </form>

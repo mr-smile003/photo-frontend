@@ -1,5 +1,6 @@
 import axios from 'axios';
-
+import { toast } from 'react-toastify';
+import '../App.css'
 /**
  * General HTTP request function
  * @param {string} method - HTTP method (e.g., 'get', 'post', 'put', 'delete', 'patch')
@@ -32,6 +33,23 @@ export function HTTP(method, uri, data = {}, headers = {}, fullUrl = null, confi
         // Make Axios request
         axios(requestConfig)
             .then(response => resolve(response))
-            .catch(error => reject(error));
+            .catch(error => {
+                // Display error in a toast
+                console.log(error)
+                const errorMessage = error.response?.data?.message || "An unexpected error occurred";
+                toast.error(errorMessage, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    className: 'custom-toast', // Apply custom toast style
+                    progressClassName: 'Toastify__progress-bar', // Style progress bar
+                });
+
+                reject(error);
+            });
     });
 }
